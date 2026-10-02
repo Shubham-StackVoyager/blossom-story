@@ -1,0 +1,1254 @@
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#030003;color:#fff;font-family:Georgia,"Times New Roman",serif}button{font:inherit;color:inherit}#app{position:relative;width:100vw;height:100svh;min-height:100vh;overflow:hidden;background:#030003;isolation:isolate}#garden{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}.atmosphere,.vignette{position:absolute;inset:0;pointer-events:none}.atmosphere{z-index:1;background:radial-gradient(ellipse at 50% 82%,rgba(160,0,40,.20),transparent 44%),radial-gradient(circle at 15% 55%,rgba(115,0,32,.09),transparent 30%),radial-gradient(circle at 85% 60%,rgba(115,0,32,.09),transparent 30%)}.vignette{z-index:2;background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.25) 70%,rgba(0,0,0,.82) 100%)}.hero{position:absolute;z-index:3;top:clamp(30px,7vh,75px);left:50%;transform:translateX(-50%);width:min(92vw,650px);text-align:center;pointer-events:none;text-shadow:0 5px 30px #000}.hero p,.paper small,.memory-wrap small{margin:0;font:600 9px/1.3 Arial,sans-serif;letter-spacing:.3em;opacity:.52}.hero h1{margin:9px 0 14px;font-size:clamp(55px,12vw,108px);line-height:.85;font-weight:400;letter-spacing:-.055em}.hero span{font:12px/1.6 Arial,sans-serif;opacity:.55}.pill{position:absolute;z-index:4;left:50%;bottom:max(60px,9vh);transform:translateX(-50%);padding:12px 21px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(55,0,18,.38);backdrop-filter:blur(10px);cursor:pointer}.hint{position:absolute;z-index:3;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);width:90%;text-align:center;font:9px Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase;opacity:.25}.screen{position:absolute;z-index:10;inset:0;display:grid;place-items:center;padding:22px;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .35s;overflow:auto}.screen.open{opacity:1;pointer-events:auto}.x{position:fixed;z-index:20;top:max(14px,env(safe-area-inset-top));right:17px;width:42px;height:42px;border:1px solid rgba(255,255,255,.25);border-radius:50%;background:rgba(0,0,0,.38);font-size:26px;cursor:pointer}.paper,.memory-wrap{width:min(92vw,560px);max-height:88svh;overflow:auto;padding:clamp(29px,6vw,54px);border-radius:18px}.paper{background:linear-gradient(145deg,#fff1e8,#efd7d1);color:#3a111c;box-shadow:0 30px 90px #000,0 0 60px rgba(190,10,70,.13)}.heart{font-size:27px;color:#a30d39}.paper h2,.memory-wrap h2{margin:12px 0 20px;font-size:clamp(38px,8vw,58px);font-weight:400}.paper p{font-size:clamp(15px,2.7vw,18px);line-height:1.85}.sign{margin-top:28px}.sign b{font-size:21px}.inside{border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:11px 18px;background:#70102e;cursor:pointer}.memory-wrap{margin:5vh auto;background:rgba(20,2,9,.96);border:1px solid rgba(255,100,170,.2)}.muted{font:13px/1.6 Arial,sans-serif;opacity:.55}.card{display:grid;grid-template-columns:88px 1fr;gap:17px;align-items:center;margin:21px 0;padding:13px;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:rgba(255,255,255,.035)}.photo{aspect-ratio:1;display:grid;place-items:center;border-radius:10px;background:radial-gradient(circle,rgba(255,75,150,.27),rgba(80,0,25,.25));color:#ffd0e7}.card h3{margin:6px 0;font-weight:400}.card p{margin:0;font:12px/1.55 Arial,sans-serif;opacity:.55}@media(max-width:600px){.hero{top:6vh}.pill{bottom:9vh}.paper{padding:30px 24px}.card{grid-template-columns:68px 1fr;gap:12px}}
+/* V5 — cinematic Love Letter */
+.letter-screen{perspective:1200px}
+.letter-screen .paper{
+  opacity:0;
+  transform:translateY(42px) scale(.96);
+  transition:opacity .65s ease 1.15s,transform .75s cubic-bezier(.2,.8,.2,1) 1.15s;
+}
+.letter-screen.open .paper{opacity:1;transform:translateY(0) scale(1)}
+.envelope-stage{
+  position:absolute;z-index:3;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  transition:opacity .45s ease 1.05s,transform .55s ease 1.05s;
+  pointer-events:none
+}
+.letter-screen.open .envelope-stage{animation:stageIn .35s ease both}
+.letter-screen.open .envelope-stage{opacity:0;transform:translate(-50%,-58%) scale(.9)}
+.envelope{position:relative;width:min(72vw,330px);height:205px;filter:drop-shadow(0 28px 40px rgba(0,0,0,.5))}
+.envelope-back,.envelope-front,.envelope-flap,.envelope-paper{position:absolute;inset:0;border-radius:8px}
+.envelope-back{background:#c8878d}
+.envelope-paper{
+  left:8%;right:8%;top:12%;bottom:auto;height:82%;
+  background:linear-gradient(145deg,#fff4eb,#ecd8d0);
+  transform:translateY(38px);
+  animation:none
+}
+.letter-screen.open .envelope-paper{animation:paperRise .95s cubic-bezier(.2,.75,.2,1) .38s both}
+.envelope-front{
+  background:linear-gradient(145deg,#bd727f,#9b5265);
+  clip-path:polygon(0 38%,50% 75%,100% 38%,100% 100%,0 100%)
+}
+.envelope-flap{
+  background:#d49aa0;
+  clip-path:polygon(0 0,100% 0,50% 63%);
+  transform-origin:50% 0;
+  z-index:4
+}
+.letter-screen.open .envelope-flap{animation:flapOpen .72s cubic-bezier(.2,.75,.2,1) .16s both}
+.seal{
+  position:absolute;z-index:5;left:50%;top:43%;transform:translate(-50%,-50%);
+  width:45px;height:45px;display:grid;place-items:center;border-radius:50%;
+  background:#7d1633;color:#ffd4e3;border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 0 20px rgba(255,55,125,.28)
+}
+.letter-screen.open .seal{animation:sealFade .35s ease .25s both}
+.opening-note{margin:18px 0 0;font:10px Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;opacity:.55}
+.letter-divider{display:flex;align-items:center;gap:12px;margin:25px 0 17px;color:#9e2043}
+.letter-divider:before,.letter-divider:after{content:"";height:1px;flex:1;background:rgba(80,20,35,.18)}
+.letter-divider span{font-size:18px}
+@keyframes stageIn{from{opacity:0;transform:translate(-50%,-45%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes flapOpen{0%{transform:rotateX(0)}100%{transform:rotateX(175deg)}}
+@keyframes paperRise{0%{transform:translateY(38px)}100%{transform:translateY(-95px)}}
+@keyframes sealFade{to{opacity:0;transform:translate(-50%,-80%) scale(.65)}}
+@media(max-width:600px){
+ .envelope{width:min(78vw,300px);height:185px}
+ .letter-screen .paper{margin-top:4vh}
+}
+
+/* V6 FIXES: envelope sequencing + performance */
+.letter-screen .paper{
+  visibility:hidden;
+  opacity:0;
+  transform:translateY(28px) scale(.985);
+  transition:none;
+}
+.letter-screen.open .paper{
+  visibility:visible;
+  animation:letterReveal .55s cubic-bezier(.2,.8,.2,1) 1.42s both;
+}
+.letter-screen .envelope-stage{
+  opacity:0;
+  visibility:hidden;
+  transform:translate(-50%,-50%) scale(.94);
+  transition:none;
+}
+.letter-screen.open .envelope-stage{
+  visibility:visible;
+  animation:envelopeSequence 1.38s ease both;
+}
+.letter-screen.open .envelope-flap{
+  animation:flapOpen .48s cubic-bezier(.2,.75,.2,1) .18s both;
+}
+.letter-screen.open .envelope-paper{
+  animation:paperRise .55s cubic-bezier(.2,.75,.2,1) .48s both;
+}
+.letter-screen.open .seal{animation:sealFade .25s ease .18s both}
+@keyframes envelopeSequence{
+  0%{opacity:0;transform:translate(-50%,-45%) scale(.94)}
+  12%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  74%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-57%) scale(.93);visibility:hidden}
+}
+@keyframes letterReveal{
+  from{opacity:0;transform:translateY(28px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* blur is costly on weaker/mobile GPUs; keep the mood with transparency */
+.screen{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+@media(max-width:700px){
+  .pill{backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+
+/* V7 — cinematic memories */
+.memories-screen{display:block;padding:0;background:rgba(3,0,3,.94);overflow-y:auto;overscroll-behavior:contain}
+.memory-story{width:min(100%,1100px);margin:0 auto;padding:clamp(70px,10vh,110px) clamp(20px,6vw,70px) 80px}
+.memory-hero{text-align:center;min-height:45svh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.memory-hero h2{margin:12px 0 14px;font-size:clamp(55px,10vw,100px);font-weight:400;letter-spacing:-.055em}
+.memory-hero p{max-width:440px;margin:0;font:14px/1.7 Arial,sans-serif;opacity:.58}
+.scroll-cue{margin-top:35px;font:9px Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;opacity:.32}
+.timeline{position:relative;padding:30px 0}
+.timeline:before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(transparent,rgba(255,93,155,.3) 8%,rgba(255,93,155,.3) 92%,transparent)}
+.moment{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:clamp(35px,7vw,90px);align-items:center;min-height:72svh;padding:50px 0}
+.moment:after{content:"♡";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#17030b;border:1px solid rgba(255,110,170,.3);color:#ff78ad;font-size:13px}
+.moment.reverse .photo-frame{order:2}.moment.reverse .moment-copy{order:1;text-align:right}
+.photo-frame{position:relative;width:min(100%,390px);justify-self:center;padding:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.025);box-shadow:0 25px 70px rgba(0,0,0,.5);transform:rotate(-1.5deg)}
+.reverse .photo-frame{transform:rotate(1.5deg)}
+.photo-placeholder{aspect-ratio:4/5;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,rgba(190,24,82,.28),rgba(42,2,18,.7) 58%,#090106);border-radius:2px;color:#ffd1e4}
+.photo-placeholder span{font-size:clamp(50px,8vw,85px);font-weight:400;opacity:.75}
+.photo-placeholder small{font:600 8px Arial,sans-serif;letter-spacing:.3em;opacity:.35}
+.moment-copy{max-width:360px}
+.moment-copy h3{margin:9px 0 15px;font-size:clamp(30px,5vw,48px);font-weight:400;line-height:1.02;letter-spacing:-.035em}
+.moment-copy p{margin:0;font:13px/1.75 Arial,sans-serif;opacity:.55}
+.memory-ending{min-height:65svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.memory-ending>span{font-size:32px;color:#ff6da8}.memory-ending h3{max-width:620px;margin:18px 0 12px;font-size:clamp(35px,7vw,64px);font-weight:400;line-height:1.05}.memory-ending p{font:13px Arial,sans-serif;opacity:.48}.memory-ending .inside{margin-top:24px}
+@media(max-width:700px){
+ .memory-story{padding-left:20px;padding-right:20px}
+ .memory-hero{min-height:42svh}
+ .timeline:before{left:17px}
+ .moment,.moment.reverse{grid-template-columns:1fr;gap:25px;min-height:auto;padding:65px 0 80px 48px}
+ .moment:after{left:17px;top:78px;width:30px;height:30px}
+ .moment.reverse .photo-frame,.moment.reverse .moment-copy{order:initial}
+ .moment.reverse .moment-copy{text-align:left}
+ .photo-frame,.reverse .photo-frame{width:min(100%,330px);justify-self:start;transform:rotate(-1deg)}
+ .moment-copy{max-width:330px}
+ .memory-ending{min-height:55svh;padding-left:25px}
+}
+
+/* V8 — real memory photos + 10-slot gallery */
+.photo-frame img{
+  display:block;
+  width:100%;
+  aspect-ratio:4/5;
+  object-fit:cover;
+  object-position:center;
+  border-radius:2px;
+  background:#090106;
+}
+.moment.future{opacity:.52}
+.moment.future .photo-frame{
+  border-style:dashed;
+  box-shadow:none;
+}
+@media(max-width:700px){
+  .photo-frame img{aspect-ratio:4/5}
+}
+
+/* V10 — Love Letter polish */
+.letter-whisper{
+  margin:28px 0!important;
+  padding:18px 20px;
+  border-left:2px solid rgba(145,20,55,.32);
+  background:rgba(145,20,55,.045);
+  font-style:italic;
+  font-size:clamp(15px,2.5vw,17px)!important;
+  line-height:1.75!important;
+}
+.letter-screen .paper{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(105,20,45,.25) transparent;
+}
+.letter-screen .paper::-webkit-scrollbar{width:5px}
+.letter-screen .paper::-webkit-scrollbar-thumb{background:rgba(105,20,45,.25);border-radius:99px}
+
+
+/* V13 — protected background music */
+.music-control{
+  position:fixed;
+  right:18px;
+  top:18px;
+  z-index:60;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:42px;
+  padding:10px 14px;
+  border:1px solid rgba(255,150,185,.24);
+  border-radius:999px;
+  color:#f8dce6;
+  background:rgba(12,0,7,.72);
+  box-shadow:0 10px 35px rgba(0,0,0,.28);
+  backdrop-filter:blur(8px);
+  cursor:pointer;
+  font:600 12px/1 Arial,sans-serif;
+  letter-spacing:.03em;
+  transition:transform .2s ease,background .2s ease,border-color .2s ease;
+}
+.music-control:hover{transform:translateY(-1px);border-color:rgba(255,150,185,.48)}
+.music-control.playing{background:rgba(80,5,31,.76);border-color:rgba(255,125,170,.48)}
+.music-icon{font-size:18px;line-height:1}
+.music-control.playing .music-icon{animation:musicPulse 1.8s ease-in-out infinite}
+@keyframes musicPulse{50%{transform:scale(1.16);text-shadow:0 0 12px rgba(255,110,160,.8)}}
+@media(max-width:700px){
+  .music-control{right:12px;top:12px;min-width:42px;padding:10px 12px}
+  .music-label{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .music-control.playing .music-icon{animation:none}
+}
+/* Open Memories button */
+#memoriesBtn {
+    display: block;
+    width: fit-content;
+    margin: 28px auto 0;
+    color: #ffffff !important;
+    text-align: center;
+}
+
+/* =====================================================
+   3RD ANNIVERSARY CINEMATIC INTRO
+===================================================== */
+
+.anniversary-intro {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            rgba(120, 10, 48, 0.32),
+            rgba(35, 0, 13, 0.18) 38%,
+            #050003 72%
+        );
+
+    color: white;
+
+    opacity: 1;
+    visibility: visible;
+
+    transition:
+        opacity 1.4s ease,
+        visibility 1.4s ease;
+}
+
+
+/* Red romantic glow behind text */
+
+.anniversary-glow {
+    position: absolute;
+
+    width: 520px;
+    height: 520px;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(180, 18, 73, 0.18),
+            rgba(100, 5, 40, 0.08) 45%,
+            transparent 70%
+        );
+
+    filter: blur(20px);
+
+    animation: anniversaryGlow 4s ease-in-out infinite;
+}
+
+
+/* Main content */
+
+.anniversary-content {
+    position: relative;
+
+    z-index: 3;
+
+    width: min(90%, 760px);
+
+    text-align: center;
+
+    opacity: 0;
+
+    transform: translateY(25px);
+
+    animation:
+        anniversaryEntrance 1.8s ease forwards;
+
+    animation-delay: 0.3s;
+}
+
+
+/* Small top text */
+
+.anniversary-eyebrow {
+    margin: 0 0 22px;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 10px;
+
+    letter-spacing: 0.35em;
+
+    color: rgba(255, 205, 220, 0.62);
+}
+
+
+/* Heart */
+
+.anniversary-heart {
+    margin-bottom: 10px;
+
+    font-size: 30px;
+
+    color: #ef6d99;
+
+    animation: anniversaryHeart 2s ease-in-out infinite;
+}
+
+
+/* Main heading */
+
+.anniversary-content h1 {
+    margin: 0;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: clamp(58px, 8vw, 105px);
+
+    line-height: 0.92;
+
+    font-weight: 400;
+
+    letter-spacing: -0.045em;
+}
+
+
+.anniversary-content h1 span {
+    display: block;
+
+    margin-top: 12px;
+
+    font-style: italic;
+
+    color: #f2b1c6;
+}
+
+
+/* Main romantic message */
+
+.anniversary-message {
+    max-width: 610px;
+
+    margin: 34px auto 0;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: clamp(15px, 2vw, 18px);
+
+    line-height: 1.8;
+
+    color: rgba(255, 240, 244, 0.72);
+}
+
+
+/* Second romantic sentence */
+
+.anniversary-forever {
+    margin: 20px auto 32px;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-style: italic;
+
+    font-size: 17px;
+
+    color: #e8a4ba;
+}
+
+
+/* Button */
+
+.begin-story-btn {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    padding: 14px 26px;
+
+    border: 1px solid rgba(255, 146, 183, 0.32);
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(117, 8, 48, 0.9),
+            rgba(77, 4, 31, 0.92)
+        );
+
+    color: white;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 40px rgba(132, 0, 47, 0.24);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        background 0.35s ease;
+}
+
+
+.begin-story-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(150, 12, 61, 0.95),
+            rgba(94, 4, 38, 0.95)
+        );
+
+    box-shadow:
+        0 15px 50px rgba(180, 10, 70, 0.32);
+}
+
+
+.begin-story-btn b {
+    color: #ff91b5;
+
+    font-size: 19px;
+
+    font-weight: 400;
+}
+
+
+/* Bottom text */
+
+.anniversary-bottom {
+    position: absolute;
+
+    bottom: 28px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 100%;
+
+    text-align: center;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 8px;
+
+    letter-spacing: 0.32em;
+
+    color: rgba(255, 205, 220, 0.28);
+}
+
+
+/* Floating symbols */
+
+.anniversary-particles span {
+    position: absolute;
+
+    z-index: 1;
+
+    color: rgba(220, 70, 120, 0.18);
+
+    animation:
+        anniversaryFloat 8s ease-in-out infinite;
+}
+
+
+.anniversary-particles span:nth-child(1) {
+    left: 10%;
+    top: 20%;
+    font-size: 24px;
+}
+
+
+.anniversary-particles span:nth-child(2) {
+    left: 22%;
+    top: 70%;
+    font-size: 12px;
+    animation-delay: 1s;
+}
+
+
+.anniversary-particles span:nth-child(3) {
+    right: 12%;
+    top: 24%;
+    font-size: 30px;
+    animation-delay: 2s;
+}
+
+
+.anniversary-particles span:nth-child(4) {
+    right: 24%;
+    bottom: 17%;
+    font-size: 12px;
+    animation-delay: 3s;
+}
+
+
+.anniversary-particles span:nth-child(5) {
+    left: 7%;
+    bottom: 15%;
+    font-size: 18px;
+    animation-delay: 4s;
+}
+
+
+.anniversary-particles span:nth-child(6) {
+    right: 8%;
+    top: 55%;
+    font-size: 10px;
+    animation-delay: 5s;
+}
+
+
+/* =====================================================
+   EXIT TRANSITION
+===================================================== */
+
+.anniversary-intro.leaving {
+
+    opacity: 0;
+
+    transform: scale(1.06);
+
+    filter: blur(8px);
+
+    pointer-events: none;
+
+    transition:
+        opacity 1.4s ease,
+        transform 1.8s ease,
+        filter 1.4s ease;
+}
+
+
+.anniversary-intro.leaving .anniversary-content {
+
+    transform: translateY(-20px) scale(1.03);
+
+    opacity: 0;
+
+    transition:
+        transform 1.2s ease,
+        opacity 0.9s ease;
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes anniversaryEntrance {
+
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes anniversaryGlow {
+
+    0%,
+    100% {
+        transform:
+            translate(-50%, -50%)
+            scale(0.9);
+
+        opacity: 0.55;
+    }
+
+    50% {
+        transform:
+            translate(-50%, -50%)
+            scale(1.1);
+
+        opacity: 1;
+    }
+}
+
+
+@keyframes anniversaryHeart {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.18);
+    }
+}
+
+
+@keyframes anniversaryFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.15;
+    }
+
+    50% {
+        transform: translateY(-30px) rotate(10deg);
+        opacity: 0.45;
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+    .anniversary-content {
+        width: 88%;
+    }
+
+    .anniversary-content h1 {
+        font-size: clamp(54px, 17vw, 78px);
+    }
+
+    .anniversary-message {
+        margin-top: 28px;
+
+        font-size: 15px;
+
+        line-height: 1.7;
+    }
+
+    .anniversary-forever {
+        font-size: 15px;
+
+        margin-bottom: 28px;
+    }
+
+    .begin-story-btn {
+        padding: 13px 23px;
+
+        font-size: 14px;
+    }
+
+    .anniversary-bottom {
+        bottom: 20px;
+
+        font-size: 7px;
+
+        letter-spacing: 0.22em;
+    }
+}
+
+/* Hide the original website while anniversary intro is open */
+
+body.anniversary-active #app {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* =====================================================
+   CINEMATIC INTRO → FOR YOU TRANSITION
+===================================================== */
+
+/* Normal app */
+#app {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+}
+
+
+/* While anniversary intro is showing */
+body.anniversary-active #app {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.05);
+    filter: blur(10px);
+    pointer-events: none;
+}
+
+
+/* When For You starts entering */
+body.story-entering #app {
+    visibility: visible;
+
+    animation: storyReveal 2.2s
+        cubic-bezier(.22, .8, .22, 1)
+        forwards;
+}
+
+
+/* Anniversary screen EXIT */
+.anniversary-intro.leaving {
+    animation: anniversaryExit 1.8s
+        cubic-bezier(.55, 0, .25, 1)
+        forwards;
+
+    pointer-events: none;
+}
+
+
+/* Make intro text leave separately */
+.anniversary-intro.leaving .anniversary-content {
+    animation: anniversaryContentExit 1.15s ease forwards;
+}
+
+
+/* Dark flash between the two scenes */
+.anniversary-intro::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 20;
+
+    background: #030003;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+.anniversary-intro.leaving::after {
+    animation: cinematicDarkness 1.8s ease forwards;
+}
+
+
+/* -----------------------------------------------------
+   ANIMATIONS
+----------------------------------------------------- */
+
+@keyframes anniversaryContentExit {
+
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-45px) scale(1.06);
+        filter: blur(8px);
+    }
+}
+
+
+@keyframes anniversaryExit {
+
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    65% {
+        opacity: 1;
+        transform: scale(1.035);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.08);
+        visibility: hidden;
+    }
+}
+
+
+@keyframes cinematicDarkness {
+
+    0% {
+        opacity: 0;
+    }
+
+    45% {
+        opacity: 0;
+    }
+
+    72% {
+        opacity: 0.88;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+
+@keyframes storyReveal {
+
+    0% {
+        opacity: 0;
+        transform: scale(1.06) translateY(25px);
+        filter: blur(12px);
+    }
+
+    35% {
+        opacity: 0.25;
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+}
+
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    .anniversary-intro.leaving,
+    .anniversary-intro.leaving .anniversary-content,
+    body.story-entering #app {
+        animation-duration: 0.4s;
+    }
+}
+
+/* =========================================
+   PAGE-TO-PAGE CINEMATIC TRANSITION
+========================================= */
+
+.page-transition {
+    position: fixed;
+    inset: 0;
+
+    z-index: 9998;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #300713 0%,
+            #120005 42%,
+            #030003 80%
+        );
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+
+/* Transition starts */
+
+.page-transition.active {
+    visibility: visible;
+    pointer-events: all;
+
+    animation: transitionCover 1.6s ease forwards;
+}
+
+
+/* Little heart */
+
+.transition-heart {
+    color: #ef7aa2;
+
+    font-family: Georgia, serif;
+    font-size: 38px;
+
+    opacity: 0;
+
+    transform: scale(.7);
+}
+
+
+.page-transition.active .transition-heart {
+    animation: transitionHeart 1.6s ease forwards;
+}
+
+
+/* Current page leaving */
+
+.page-leaving {
+    animation: pageLeave .75s ease forwards !important;
+}
+
+
+/* New page entering */
+
+.page-entering {
+    animation: pageEnter 1.1s
+        cubic-bezier(.22,.8,.22,1)
+        forwards !important;
+}
+
+
+/* -----------------------------------------
+   Animations
+----------------------------------------- */
+
+@keyframes pageLeave {
+
+    from {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(.97);
+        filter: blur(7px);
+    }
+}
+
+
+@keyframes pageEnter {
+
+    from {
+        opacity: 0;
+        transform: translateY(22px) scale(1.02);
+        filter: blur(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+
+@keyframes transitionCover {
+
+    0% {
+        opacity: 0;
+    }
+
+    35% {
+        opacity: 1;
+    }
+
+    68% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+
+@keyframes transitionHeart {
+
+    0% {
+        opacity: 0;
+        transform: scale(.6);
+    }
+
+    35% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    55% {
+        opacity: 1;
+        transform: scale(1.18);
+    }
+
+    75% {
+        opacity: 0;
+        transform: scale(1.4);
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* =====================================================
+   CINEMATIC PAGE TRANSITIONS
+===================================================== */
+
+.page-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(86, 5, 34, 0.98) 0%,
+      rgba(28, 0, 12, 0.99) 48%,
+      #030003 100%
+    );
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.page-transition.active {
+  visibility: visible;
+  pointer-events: auto;
+  animation: cinematicPageCover 1.8s ease forwards;
+}
+
+.transition-heart {
+  font-family: Georgia, serif;
+  font-size: 46px;
+  color: #ff86ad;
+
+  opacity: 0;
+  transform: scale(.5);
+}
+
+.page-transition.active .transition-heart {
+  animation: cinematicTransitionHeart 1.8s ease forwards;
+}
+
+
+/* Current page disappearing */
+
+.transition-page-out {
+  animation: cinematicPageOut .72s ease forwards !important;
+}
+
+
+/* New page appearing */
+
+.transition-page-in {
+  animation: cinematicPageIn 1.05s
+    cubic-bezier(.22,.8,.22,1)
+    forwards !important;
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes cinematicPageOut {
+
+  from {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(.96);
+    filter: blur(8px);
+  }
+}
+
+
+@keyframes cinematicPageIn {
+
+  from {
+    opacity: 0;
+    transform: translateY(25px) scale(1.025);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+
+@keyframes cinematicPageCover {
+
+  0% {
+    opacity: 0;
+  }
+
+  28% {
+    opacity: 1;
+  }
+
+  68% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+
+@keyframes cinematicTransitionHeart {
+
+  0% {
+    opacity: 0;
+    transform: scale(.5);
+  }
+
+  28% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  48% {
+    opacity: 1;
+    transform: scale(1.22);
+  }
+
+  68% {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+/* =====================================================
+   V15 — FUTURE MEMORY + SECRET NOTE + FOREVER FINALE
+===================================================== */
+.future-memory{opacity:1!important}
+.future-frame{display:grid;place-items:center;min-height:420px;border:1px dashed rgba(255,142,180,.35);background:radial-gradient(circle at 50% 42%,rgba(126,11,52,.2),rgba(5,0,3,.92) 68%)}
+.future-frame-inner{text-align:center;color:rgba(255,211,225,.65);letter-spacing:.2em}
+.future-frame-inner span{display:block;font-size:54px;line-height:1;margin-bottom:18px;color:#d85f8a;animation:futurePulse 2.4s ease-in-out infinite}
+.future-frame-inner small{font-size:9px}
+.future-promise{margin-top:18px!important;color:#e5a6bb!important;font-style:italic}
+@keyframes futurePulse{50%{transform:scale(1.12);opacity:.72}}
+
+.secret-love-btn{margin-top:18px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,126,169,.42);background:rgba(88,5,36,.42);color:#ff8eb4;font-size:19px;cursor:pointer;transition:.3s ease}
+.secret-love-btn:hover,.secret-love-btn.revealed{transform:scale(1.1);background:rgba(130,8,52,.65);box-shadow:0 0 28px rgba(211,38,101,.2)}
+.secret-love-note{max-height:0;opacity:0;overflow:hidden;transform:translateY(8px);transition:max-height .8s ease,opacity .7s ease,transform .7s ease}
+.secret-love-note.show{max-height:180px;opacity:1;transform:none;margin-top:15px}
+.secret-love-note small{letter-spacing:.16em;color:#d97a9a}
+.secret-love-note p{margin-top:8px!important}
+
+.one-last-btn{margin-top:18px}
+.forever-finale{position:fixed;inset:0;z-index:25000;overflow-y:auto;overscroll-behavior:contain;background:radial-gradient(circle at 50% 35%,#43091f 0,#170008 40%,#030003 76%);color:#fff;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 1s ease,visibility 1s ease}
+.forever-finale.open{opacity:1;visibility:visible;pointer-events:auto}
+.finale-content{position:relative;z-index:2;width:min(88%,720px);min-height:100%;margin:auto;padding:80px 0 64px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.finale-content>small{font:10px Arial,sans-serif;letter-spacing:.32em;color:rgba(255,210,225,.55)}
+.finale-heart{font-size:30px;color:#ef719d;margin:18px 0;animation:anniversaryHeart 2s ease-in-out infinite}
+.finale-content h2{font:400 clamp(44px,7vw,82px)/.98 Georgia,serif;letter-spacing:-.04em;margin:0 0 20px}
+.finale-content p{max-width:610px;font:16px/1.8 Georgia,serif;color:rgba(255,238,244,.76);margin:9px auto}
+.finale-content strong{color:#ffd3e0;font-weight:600}
+.finale-lead{font-size:clamp(22px,3vw,30px)!important;color:#f2a8c0!important;font-style:italic}
+.forever-line{font-size:21px!important;color:#fff!important;margin-top:22px!important}
+.kiss-moment{margin-top:34px;padding-top:28px;width:min(100%,520px);border-top:1px solid rgba(255,160,190,.18)}
+.kiss-btn{margin-top:12px}
+.kiss-surprise{max-height:0;opacity:0;overflow:hidden;transition:max-height 1.2s ease,opacity 1s ease,transform 1s ease;transform:translateY(12px)}
+.kiss-surprise.show{max-height:320px;opacity:1;transform:none;margin-top:24px}
+.kiss-emoji{font-size:58px;animation:kissPop .8s cubic-bezier(.2,.8,.2,1)}
+.kiss-hearts{position:relative;height:55px;margin-top:-8px}
+.kiss-hearts span{position:absolute;left:50%;bottom:0;font-size:22px;animation:kissFloat 2.4s ease-out infinite}
+.kiss-hearts span:nth-child(1){margin-left:-85px;animation-delay:.1s}.kiss-hearts span:nth-child(2){margin-left:-42px;animation-delay:.35s}.kiss-hearts span:nth-child(3){margin-left:5px;animation-delay:.6s}.kiss-hearts span:nth-child(4){margin-left:48px;animation-delay:.25s}.kiss-hearts span:nth-child(5){margin-left:78px;animation-delay:.75s}
+.finale-home{margin-top:30px;opacity:.5;pointer-events:none;transition:.5s ease}
+.finale-home.ready{opacity:1;pointer-events:auto}
+.finale-stars span{position:fixed;color:rgba(238,96,145,.18);font-size:22px;animation:anniversaryFloat 8s ease-in-out infinite}.finale-stars span:nth-child(1){left:8%;top:18%}.finale-stars span:nth-child(2){right:12%;top:24%;animation-delay:1s}.finale-stars span:nth-child(3){left:15%;bottom:15%;animation-delay:2s}.finale-stars span:nth-child(4){right:18%;bottom:19%;animation-delay:3s}.finale-stars span:nth-child(5){left:50%;top:8%;animation-delay:4s}
+@keyframes kissPop{0%{transform:scale(.2);opacity:0}70%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
+@keyframes kissFloat{0%{transform:translateY(10px) scale(.7);opacity:0}30%{opacity:1}100%{transform:translateY(-48px) scale(1.15);opacity:0}}
+@media(max-width:700px){.future-frame{min-height:330px}.finale-content{padding:64px 22px 50px}.finale-content h2{font-size:48px}.finale-content p{font-size:15px;line-height:1.7}.forever-line{font-size:19px!important}}
+
+/* =====================================================
+   V16 — RELATIONSHIP COUNTER + HIDDEN REASONS + POLISH
+===================================================== */
+.love-counter{width:min(92%,620px);margin:28px auto 20px;padding:22px 24px;border-top:1px solid rgba(255,150,185,.16);border-bottom:1px solid rgba(255,150,185,.16);display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center}
+.love-counter small{font:9px Arial,sans-serif;letter-spacing:.25em;color:rgba(255,190,212,.55)}
+.love-counter strong{font:400 clamp(18px,2.2vw,24px)/1.35 Georgia,serif;color:#f6d5df}
+.love-counter span{font:12px Arial,sans-serif;letter-spacing:.12em;color:#d77899}
+.love-counter em{font:italic 14px/1.5 Georgia,serif;color:rgba(255,225,235,.65)}
+
+.reason-heart{margin-top:17px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,126,169,.35);background:rgba(88,5,36,.32);color:#ff8eb4;font-size:19px;cursor:pointer;transition:transform .3s ease,background .3s ease,box-shadow .3s ease}
+.reason-heart:hover,.reason-heart.revealed{transform:scale(1.1);background:rgba(130,8,52,.62);box-shadow:0 0 28px rgba(211,38,101,.2)}
+.reason-note{max-height:0;opacity:0;overflow:hidden;transform:translateY(8px);transition:max-height .8s ease,opacity .7s ease,transform .7s ease}
+.reason-note.show{max-height:230px;opacity:1;transform:none;margin-top:15px}
+.reason-note small{letter-spacing:.14em;color:#d97a9a!important;font-size:8px!important}
+.reason-note h4{margin:8px 0 3px;font:italic 20px/1.25 Georgia,serif;color:#f5c2d3}
+.reason-note p{margin-top:5px!important}
+
+.forever-footer{position:fixed;left:50%;bottom:8px;z-index:26000;transform:translateX(-50%);font:7px Arial,sans-serif;letter-spacing:.24em;color:rgba(255,196,215,.22);white-space:nowrap;pointer-events:none}
+.forever-footer span{color:rgba(255,117,162,.45);margin:0 7px}
+
+/* V16 mobile polish */
+@media(max-width:700px){
+  .love-counter{margin:22px auto 16px;padding:18px 12px;gap:6px}
+  .love-counter strong{font-size:18px}.love-counter em{font-size:13px}
+  .reason-heart{width:42px;height:42px;font-size:21px}
+  .reason-note h4{font-size:18px}
+  .forever-footer{font-size:6px;letter-spacing:.17em;bottom:max(7px,env(safe-area-inset-bottom))}
+  .inside,.begin-story-btn,.kiss-btn,.one-last-btn{min-height:44px}
+}
+
+/* =====================================================
+   V17 — HOLD TO REVEAL • OPEN WHEN • CHAPTER 4
+===================================================== */
+.hold-love-card,.miss-me-card{width:min(92%,620px);margin:42px auto 0;padding:28px 24px;border:1px solid rgba(255,140,180,.16);border-radius:24px;background:rgba(20,0,8,.34);text-align:center}
+.hold-love-card>small{font:700 9px/1.4 Arial,sans-serif;letter-spacing:.28em;color:rgba(255,190,212,.52)}
+.hold-love-card>p{margin:12px 0 20px;color:rgba(255,238,244,.7);font-style:italic}
+.hold-love-btn{position:relative;width:min(100%,300px);height:52px;overflow:hidden;border:1px solid rgba(255,126,169,.42);border-radius:999px;background:rgba(74,4,29,.62);color:#fff;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none}
+.hold-fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,rgba(157,11,62,.7),rgba(239,75,132,.8));transition:width .15s linear}
+.hold-love-btn.holding .hold-fill{width:100%;transition:width 2s linear}
+.hold-label{position:relative;z-index:1;font:600 14px Georgia,serif}
+.hold-love-reveal{max-height:0;opacity:0;overflow:hidden;transform:translateY(10px);transition:max-height .9s ease,opacity .8s ease,transform .8s ease}
+.hold-love-reveal.show{max-height:240px;opacity:1;transform:none;margin-top:22px}
+.hold-love-reveal>span{font-size:30px}.hold-love-reveal p{margin:10px auto;line-height:1.7;color:#f5dbe4}.hold-love-reveal strong{color:#ffb2cb;font-weight:500}
+.miss-me-envelope{display:flex;align-items:center;justify-content:center;gap:15px;width:100%;border:0;background:transparent;color:#fff;cursor:pointer;text-align:left}.miss-envelope-icon{font-size:38px;filter:drop-shadow(0 8px 20px rgba(185,18,77,.25))}.miss-me-envelope small{display:block;font:700 8px/1.4 Arial,sans-serif;letter-spacing:.25em;color:rgba(255,190,212,.48)}.miss-me-envelope strong{display:block;margin-top:3px;font:italic 24px/1.2 Georgia,serif;color:#f7c1d3}
+.miss-me-note{max-height:0;opacity:0;overflow:hidden;transform:translateY(-8px);transition:max-height 1s ease,opacity .9s ease,transform .9s ease}.miss-me-note.open{max-height:420px;opacity:1;transform:none;margin-top:24px;padding-top:22px;border-top:1px solid rgba(255,150,185,.14)}.miss-me-note p{line-height:1.8;color:rgba(255,238,244,.76)}.miss-me-note strong{display:block;margin-top:16px;color:#ffb7cf;font:italic 17px/1.6 Georgia,serif}
+.next-chapter-btn{display:none;margin:34px auto 10px}.next-chapter-btn.ready{display:inline-flex}.finale-home.ready{margin-top:10px}
+.chapter-four{position:fixed;inset:0;z-index:26000;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 50% 52%,#4a0b24 0,#160008 44%,#030003 78%);color:#fff;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 1s ease,visibility 1s ease}.chapter-four.open{opacity:1;visibility:visible;pointer-events:auto}.chapter-four-glow{position:absolute;width:min(80vw,700px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(221,37,102,.18),transparent 67%);filter:blur(18px);animation:chapterGlow 4s ease-in-out infinite}.chapter-four-content{position:relative;z-index:2;width:min(88%,720px);text-align:center;animation:chapterRise 1.4s cubic-bezier(.22,.8,.22,1) both}.chapter-four-content small{font:700 9px/1.4 Arial,sans-serif;letter-spacing:.32em;color:rgba(255,196,215,.52)}.chapter-four-heart{margin:18px 0 6px;color:#ff7eaa;font-size:30px}.chapter-four h2{margin:0;font:400 clamp(66px,10vw,120px)/.95 Georgia,serif;letter-spacing:-.055em}.chapter-date{margin:14px 0 28px!important;color:#f3aac3!important;font:italic clamp(18px,3vw,25px)/1.3 Georgia,serif!important}.chapter-four-content>p:not(.chapter-date){font:400 clamp(20px,3vw,30px)/1.5 Georgia,serif;color:#f6e7ec}.chapter-four-content>strong{display:block;max-width:580px;margin:24px auto 34px;color:#ffbdd2;font:italic 17px/1.7 Georgia,serif}.chapter-four-flowers span{position:absolute;opacity:.16;animation:chapterFloat 6s ease-in-out infinite}.chapter-four-flowers span:nth-child(1){left:8%;bottom:10%;font-size:62px}.chapter-four-flowers span:nth-child(2){left:18%;top:18%;font-size:28px;animation-delay:1s}.chapter-four-flowers span:nth-child(3){right:8%;top:15%;font-size:54px;animation-delay:2s}.chapter-four-flowers span:nth-child(4){right:18%;bottom:17%;font-size:25px;animation-delay:3s}.chapter-four-flowers span:nth-child(5){left:48%;bottom:5%;font-size:42px;animation-delay:4s}
+@keyframes chapterGlow{50%{transform:scale(1.12);opacity:.8}}@keyframes chapterRise{from{opacity:0;transform:translateY(28px) scale(1.02);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}@keyframes chapterFloat{50%{transform:translateY(-22px) rotate(8deg);opacity:.3}}
+@media(max-width:700px){.hold-love-card,.miss-me-card{padding:23px 17px;border-radius:20px}.hold-love-btn{height:54px}.miss-me-envelope strong{font-size:21px}.chapter-four h2{font-size:19vw}.chapter-four-content>strong{font-size:15px}.chapter-four-flowers span{transform:scale(.75)}}
